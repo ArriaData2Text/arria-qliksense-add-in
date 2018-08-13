@@ -14,17 +14,12 @@ Look at the visuals on your dashboard. How would you explain the critical inform
 
 - Narratives are fully interactive:
 
-   In selections within visuals
+   - In selections within visuals
  
-   With filters and drill-downs
+   - With filters and drill-downs
 - Narratives created for any type of data-driven visual, or even for underlying data not visualized in your report
 
 - Narratives created that draw on data from as many visuals as you like
-
-- Your words, your thinking, your logic – it’s these that determine the NLG you are embedding, not generic, pre-written templates
-
-   You create the narrative – for your specific use case, about the domain in which your expertise resides
-- The NLG is available in published dashboards on the web (outside Qlik Sense)
 
 **Features:**
 
@@ -34,14 +29,14 @@ Look at the visuals on your dashboard. How would you explain the critical inform
 
 - Built-in integration of NLG to make your Qlik Sense analytics more informative and easy to understand
 
-   Tightly coupled workflow between Qlik Sense and NLG Studio for designing, publishing, and connecting the NLG project to the visualization
+   - Tightly coupled workflow between Qlik Sense and NLG Studio for designing, publishing, and connecting the NLG project to the visualization
 - Full flexibility for the BI developer – interpret the findings, summarize the key insights, point out specific facts, or tell the whole story in as many words as you need
 
 - Fast-track access to the Arria Store:
 
-   Leverage the work of NLG engineers, data scientists, and other BI developers who have created applications and published them there
+   - Leverage the work of NLG engineers, data scientists, and other BI developers who have created applications and published them there
 
-   Use Arria’s starter projects and sample applications
+   - Use Arria’s starter projects and sample applications
 
 
 ### Quick Start Guide
