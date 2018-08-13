@@ -49,4 +49,5 @@ You'll need an Arria NLG Studio account to use this add-in. Sign up for the free
 ?? Ask Jay: Do we need to enter any information here? I.e. the type of license. It might be based on whether we publish as source code or compiled code. 
 
 Copyright © 2018 Arria NLG
+
 Released under the Arria NLG Studio Subscription Agreement
