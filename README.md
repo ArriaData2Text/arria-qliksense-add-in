@@ -1,4 +1,3 @@
-﻿﻿﻿﻿﻿
 # Natural Language Summaries for BI - Arria NLG Extension for Qlik Sense
 
 ### Add narratives for any data-driven visual, or underlying data, across the entire dashboard
