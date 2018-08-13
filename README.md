@@ -46,5 +46,4 @@ https://samples.studio.arria.com/bi-ai-for-qlik/
 You'll need an Arria NLG Studio account to use this add-in. Sign up for the free trial: https://app.studio.arria.com/
 
 ### License
-Copyright © 2018 Arria NLG
-Released under the Arria NLG Studio Subscription Agreement
+Copyright © 2018 Arria NLG. Released under the Arria NLG Studio Subscription Agreement
