@@ -36,7 +36,7 @@ By adding Arria’s powerful NLG functionality to your Qlik Sense Desktop, you e
    
 - Full flexibility for the BI developer – interpret the findings, summarize the key insights, point out specific facts, or tell the whole story in as many words as you need
    
-   - Fast-track access to the Arria Store:
+- Fast-track access to the Arria Store:
    
    - Leverage the work of NLG engineers, data scientists, and other BI developers who have created applications and published them there
    
