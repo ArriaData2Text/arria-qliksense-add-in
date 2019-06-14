@@ -1,9 +1,9 @@
 {
-	"name" : "Articulate Intelligence",
-	"description" : "Add NLG narratives beside visuals to instantly enhance the analysis of your entire dashboard.",
+	"name" : "Natural Language Summaries for BI",
+	"description" : "Add out-of-the-box or custom narratives to explain the underlying data",
 	"icon" : "extension",
 	"type" : "visualization",
-	"version": "0.1",
+	"version": "2.1",
 	"preview" : "arria.png",
 	"author": "Arria NLG"
 }
