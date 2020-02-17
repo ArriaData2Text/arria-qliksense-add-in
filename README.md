@@ -45,9 +45,12 @@ By adding Arria’s powerful NLG functionality to your Qlik Sense Desktop, you e
 ### Quick Start Guide
 https://samples.studio.arria.com/v2-qlik/
 
+### Release Notes
+https://samples.studio.arria.com/qlik-sense-rns/
+
 ### Usage and Limitations
 If you want to go beyond the out-of-the-box narratives offered by this add-in, you'll need an Arria NLG Studio account. Sign up for the free trial: https://www.arria.com/request-a-trial/
 
 ### License
-Copyright © 2019 Arria NLG. Released under the Arria NLG Studio Subscription Agreement
+Copyright © 2020 Arria NLG. Released under the Arria NLG Studio Subscription Agreement
 
