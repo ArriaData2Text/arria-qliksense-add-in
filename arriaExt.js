@@ -5,7 +5,8 @@ define([
     'qlik',
     'text!./css/style.css',
     './js/fingerprint2',
-    './js/bi_mappings'
+    './js/bi_mappings',
+    './js/config'
 ], function ($, qlik, style, Fingerprint2) {
     'use strict';
     //append style tab to dom and include all style attributes from style.css
@@ -16,14 +17,16 @@ define([
      * @description Initialize Global Variables
      * @returns 
      */
-    let defaultApiEndpoint = "https://bi.prod.arria.com/"; //Prod
+    let configuration = window.property();
+    let defaultApiEndpoint = configuration.apiEndpoint; //Prod
     let apiEndpoint = defaultApiEndpoint;
-    var authorizationValue = "Yml3cmFwcGVyOnc/R2NkZzdl";
-    let supportURL = "https://samples.studio.arria.com/bi-ai-for-qlik/";
-    let OOTBGenerateEndPoint = "https://eut3hmitn2.execute-api.us-east-1.amazonaws.com/release-1-1-1/arriatestootbglooapi";
-    let OOTBEndPointAPIKey = "MCrD8Y2tOQ2BhpjkrpW5q1ybQIA2h6vi84xhdEkd";
-    let OOTBEndPoint = "https://jxczzc66qa.execute-api.us-east-1.amazonaws.com/prod/";
-    let OOTBEndPointKey = "YXH7gK57Wv5Ld213gci3YaTttaca0EDi85miLX07";
+    var authorizationValue = configuration.authorization;
+    let supportURL = configuration.supportURL;
+    let OOTBEndPoint = configuration.ootbEndPoint;
+    let OOTBEndPointKey = configuration.ootbEndPointKey;
+    let OOTBGenerateEndPoint = configuration.ootbGenerationEndPoint;
+    let OOTBEndPointAPIKey = configuration.ootbGenerationEndPointKey;
+    let version = configuration.version;
     let entityType = {
         entityTypes: []
     };
@@ -211,7 +214,7 @@ define([
         element += '</div>';
         // Third Tab
         element += '<footer>';
-        element += '<div class="col-md-2"><img class="copyright" src="' + apiEndpoint + 'arria/images/copyright.png"><p class="version">Version 2.1</p></div><div class="col-md-10 text-right"><button type="button" class="generate_btn">Generate Text</button></div>';
+        element += '<div class="col-md-2"><img class="copyright" src="' + apiEndpoint + 'arria/images/copyright.png"><p class="version">Version ' + version + '</p></div><div class="col-md-10 text-right"><button type="button" class="generate_btn">Generate Text</button></div>';
         element += '</footer>';
         element += '</div>';
         // Out Of Box Section End
@@ -405,7 +408,7 @@ define([
         element += '</div>';
         //Advance Mode
         element += '<footer>';
-        element += '<div class="col-md-2"><img class="copyright" src="' + apiEndpoint + 'arria/images/copyright.png"><p class="version">Version 2.1</p></div><div class="col-md-10 text-right"><button type="button" class="openstudio_btn" id="openStudioBtn' + chartId + '" disabled>Open with Studio</button><button type="button" class="generate_btn"><img style="display:none" src="' + apiEndpoint + 'arria/images/loader.gif">Generate Text</button></div>';
+        element += '<div class="col-md-2"><img class="copyright" src="' + apiEndpoint + 'arria/images/copyright.png"><p class="version">Version ' + version + '</p></div><div class="col-md-10 text-right"><button type="button" class="openstudio_btn" id="openStudioBtn' + chartId + '" disabled>Open with Studio</button><button type="button" class="generate_btn"><img style="display:none" src="' + apiEndpoint + 'arria/images/loader.gif">Generate Text</button></div>';
         element += '</footer>';
         element += '</div>';
         // Narrative Section
@@ -861,6 +864,8 @@ define([
             let measureInfo = this.backendApi.getMeasureInfos();
             for (let index = 0; index < measureInfo.length; index++) {
                 let measureName = measureInfo[index].qFallbackTitle;
+                measureName = measureName.replace("[", '');
+                measureName = measureName.replace("]", '');
                 if (measureName.indexOf("(") !== -1) {
                     measuresList.push(measureName);
                     let columnData = measureName.split("(")[1].split(")")[0];
@@ -887,7 +892,7 @@ define([
              */
             function getDataSet(chartId) {
                 var requestPage = [{
-                    qTop: 0,
+                    qTop: initialRow,
                     qLeft: 0,
                     qWidth: columns, //should be # of columns
                     qHeight: Math.min(pageRowCount, totalRowCount - initialRow)
@@ -911,18 +916,21 @@ define([
                                     }
                                     tmpArr.push(val);
                                 }
-                                rowsArr.push(tmpArr);
-                                let dataArr = [];
-                                // csv_rowData=[];
-                                dataArr = dataArr.concat(tmpArr);
-                                dataArr.splice(0, 0, index + 1);
-                                csv_rowData.push(dataArr);
+                                let filterRowCount = tmpArr.filter(row => row === null || row === "0");
+                                if (filterRowCount.length !== cell.length) {
+                                    rowsArr.push(tmpArr);
+                                    let dataArr = [];
+                                    // csv_rowData=[];
+                                    dataArr = dataArr.concat(tmpArr);
+                                    dataArr.splice(0, 0, index + 1);
+                                    csv_rowData.push(dataArr);
+                                }
                             });
                         } catch (err) {
                             console.log(err);
                         }
                         dataModel["_id"] = "1";
-                        dataModel["version"] = "2.1.0";
+                        dataModel["version"] = version;
                         dataModel["chartType"] = "table";
                         dataModel['source'] = 'qliksense';
                         dataModel['targetApp'] = '';
@@ -1786,7 +1794,7 @@ define([
                                         }
                                     }
                                     if (targetElement === "narrativeView") {
-                                        let narrativePresistData = (presistData["narrativeText"] === undefined) ? "" : presistData["narrativeText"].trim();
+                                        let narrativePresistData = presistData["narrativeText"] ? presistData["narrativeText"].trim() : "";
                                         targetView = presistData["targetView"];
                                         if (targetView === "ootb") {
                                             if (typeof (narrativePresistData) === "string")
@@ -3188,19 +3196,19 @@ define([
 
 
                             function disableEditMode() {
-                                if (qlik.navigation.getMode() === "edit") {
-                                    if (!maximize)
-                                        disableContainer.style.display = "block";
+                                if (qlik.navigation.getMode() === "edit" && !maximize) {
+                                    disableContainer.style.display = "block";
                                 } else {
                                     disableContainer.style.display = "none";
                                 }
-
                             }
 
                             disableContainer.addEventListener('click', function () {
-                                if (document.getElementById('modal' + chartId).style.display == "none") {
-                                    document.getElementById('closemodal' + chartId).style.marginBottom = "40px";
-                                    showModal("<img class='resize-disable' src='" + apiEndpoint + "arria/images/qs_max_icon.png'> Please use the maximised view for configuration", chartId);
+                                if(!maximize){
+                                    if (document.getElementById('modal' + chartId).style.display == "none") {
+                                        document.getElementById('closemodal' + chartId).style.marginBottom = "40px";
+                                        showModal("<img class='resize-disable' src='" + apiEndpoint + "arria/images/qs_max_icon.png'> Please use the maximized view for configuration", chartId);
+                                    }
                                 }
                             });
                             /**
@@ -3372,10 +3380,15 @@ define([
                                 else
                                     jsonTag.value = JSON.stringify(dataModel);
                                 document.body.appendChild(jsonTag);
-                                if (checkSliderBtn.checked)
-                                    eval(advanceScriptInputSimpleElement.value);
-                                else
-                                    eval(scriptInputSimpleElement.value);
+                                try {
+                                    if (checkSliderBtn.checked)
+                                        eval(advanceScriptInputSimpleElement.value);
+                                    else
+                                        eval(scriptInputSimpleElement.value);
+                                } catch (error) {
+                                    console.log(error);
+                                }
+
                             };
 
                             /**
@@ -3410,19 +3423,18 @@ define([
                              * @returns 
                              */
                             function downloadCSV_Data() {
-                                let params = "";
                                 var objArray = [];
                                 objArray = objArray.concat(csv_rowData);
                                 objArray.splice(0, 0, csv_columnData);
                                 var inputData = JSON.stringify({
                                     "data": objArray
                                 });
-                                inputData = inputData.replace(/\s\s+/g, ' ');
-                                params = "data=" + encodeURIComponent(inputData);
+                                // inputData = inputData.replace(/\s\s+/g, ' ');
+                                // params = "data=" + encodeURIComponent(inputData);
                                 let xmlCall = new XMLHttpRequest();
                                 validateWrapperURL();
-                                xmlCall.open('POST', apiEndpoint + "arria/saveCSVfile");
-                                xmlCall.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                xmlCall.open('POST', apiEndpoint + "arria/saveCSV");
+                                xmlCall.setRequestHeader("Content-Type", "application/json");
                                 if (targetView === "advance") {
                                     let wrapperUrl = document.getElementById('wrapperURL' + chartId);
                                     if (wrapperUrl.value !== "")
@@ -3436,7 +3448,7 @@ define([
                                         window.open(apiEndpoint + 'arria/download?id=' + xmlCall.responseText + "&ext=csv");
                                 }
                                 if (window.navigator.onLine)
-                                    xmlCall.send(params);
+                                    xmlCall.send(inputData);
                                 else
                                     showModal("You are offline. Please check that you are connected to the Internet", chartId);
                             };
@@ -3695,7 +3707,9 @@ define([
                                         // xmlhttp Ready State 
                                         if (xmlhttp.readyState === XMLHttpRequest.DONE) {
                                             if (xmlhttp.responseText !== "undefined") {
-                                                narrative = JSON.parse(xmlhttp.responseText);
+                                                narrative = xmlhttp.responseText;
+                                                if (typeof (narrative) === "string")
+                                                    narrative = JSON.parse(narrative);
                                                 if (narrative["type"]) {
                                                     if (type === 2) {
                                                         let formattedModel = {};
@@ -3760,7 +3774,9 @@ define([
                                                                 formattedModel = JSON.parse(narrative["data"]);
                                                         } catch (error) {
                                                             outputData = "Insights URL response error <br><br>";
-                                                            outputData += narrative["data"].trim();
+                                                            if (narrative["data"])
+                                                                narrative["data"] = narrative["data"].trim();
+                                                            outputData += narrative["data"];
                                                             narrativeContainer.innerHTML = outputData;
                                                             setViewVisibility(outputData);
                                                             return;
@@ -3781,7 +3797,9 @@ define([
                                                             showModal("You are offline. Please check that you are connected to the Internet", chartId);
                                                     } else {
                                                         narrativeContainer.innerHTML = "";
-                                                        outputData = narrative["data"].trim();
+                                                        outputData = narrative["data"]
+                                                        if (outputData)
+                                                            outputData = outputData.trim();
                                                         // Change Color Property based on the reponse type
                                                         if (outputData.indexOf('{color}') != -1) {
                                                             outputData = outputData.replace(/{color}/g, "</span>");
@@ -3802,15 +3820,18 @@ define([
                                                         setViewVisibility(outputData);
                                                     }
                                                 } else {
-                                                    outputData = narrative["error"].trim();
-                                                    if (outputData.includes("401 Unauthorized")) {
-                                                        showModal("Please enter a valid Header Key/Value pair", chartId);
-                                                        disableLoader();
-                                                        return;
-                                                    } else if (outputData == "URI is not absolute") {
-                                                        showModal("Please enter a valid NLG Service URL", chartId);
-                                                        disableLoader();
-                                                        return;
+                                                    outputData = narrative["error"]
+                                                    if (outputData) {
+                                                        outputData = outputData.trim();
+                                                        if (outputData.includes("401 Unauthorized")) {
+                                                            showModal("Please enter a valid Header Key/Value pair", chartId);
+                                                            disableLoader();
+                                                            return;
+                                                        } else if (outputData == "URI is not absolute") {
+                                                            showModal("Please enter a valid NLG Service URL", chartId);
+                                                            disableLoader();
+                                                            return;
+                                                        }
                                                     }
                                                     narrativeContainer.innerHTML = outputData;
                                                     setViewVisibility(outputData);
@@ -3981,6 +4002,7 @@ define([
                              * @description The Function Generate Simple UI Narrative Text
                              * @returns 
                              */
+
                             function callUpdate(url) {
                                 let pageLoader = document.getElementById('pageloader' + chartId);
                                 if (pageLoader.style.display == "none")
@@ -3993,8 +4015,8 @@ define([
                                 let narrativeTabElement = document.getElementById('narrative-tabsection' + chartId);
                                 try {
                                     let authKey = document.getElementById('authValue' + chartId);
-                                    xmlhttp.open('POST', apiEndpoint + "arria/nlg");
-                                    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                    xmlhttp.open('POST', apiEndpoint + "arria/nlgAdvanced");
+                                    xmlhttp.setRequestHeader("Content-type", "application/json;");
                                     xmlhttp.setRequestHeader("Authorization", "Basic " + authorizationValue);
                                     xmlhttp.setRequestHeader('userid', fingerPrintKey);
                                     xmlhttp.onreadystatechange = () => {
@@ -4004,7 +4026,9 @@ define([
                                                 let narrative = JSON.parse(xmlhttp.responseText);
                                                 if (narrative["type"]) {
                                                     narrativeContainer.innerHTML = "";
-                                                    outputData = narrative["data"].trim();
+                                                    outputData = narrative["data"];
+                                                    if (outputData)
+                                                        outputData = outputData.trim();
                                                     // Change Color Property based on the reponse type
                                                     if (outputData.indexOf('{color}') != -1) {
                                                         outputData = outputData.replace(/{color}/g, "</span>");
@@ -4023,15 +4047,18 @@ define([
                                                     }
                                                     narrativeContainer.innerHTML = outputData;
                                                 } else {
-                                                    outputData = narrative["error"].trim();
-                                                    if (outputData.includes("401 Unauthorized")) {
-                                                        showModal("Please enter a valid API Key", chartId);
-                                                        disableLoader();
-                                                        return;
-                                                    } else if (outputData == "URI is not absolute") {
-                                                        showModal("Please enter a valid Studio Project URL", chartId);
-                                                        disableLoader();
-                                                        return;
+                                                    outputData = narrative["error"];
+                                                    if (outputData) {
+                                                        outputData = outputData.trim();
+                                                        if (outputData.includes("401 Unauthorized")) {
+                                                            showModal("Please enter a valid API Key", chartId);
+                                                            disableLoader();
+                                                            return;
+                                                        } else if (outputData == "URI is not absolute") {
+                                                            showModal("Please enter a valid Studio Project URL", chartId);
+                                                            disableLoader();
+                                                            return;
+                                                        }
                                                     }
                                                     narrativeContainer.innerHTML = outputData;
                                                 }
@@ -4056,7 +4083,6 @@ define([
 
                                     // Generate API Request Format
                                     let customScriptAppendElement = document.getElementById('jsbuilderoutput' + chartId);
-                                    let reqParams = "";
                                     let model;
                                     if (customScriptAppendElement.value !== "")
                                         model = customScriptAppendElement.value;
@@ -4070,7 +4096,6 @@ define([
                                         model = dataModel;
                                     }
                                     let formattedModel = {};
-                                    let finalData;
                                     if (url.indexOf("studio.arria.com") !== -1) {
                                         if (describeTbl) {
                                             if (typeof (model) !== "object")
@@ -4114,7 +4139,6 @@ define([
                                             formattedModel["options"] = {
                                                 "nullValueBehaviour": "SHOW_IDENTIFIER"
                                             };
-                                            finalData = JSON.stringify(formattedModel);
                                         } else {
                                             let data = {};
                                             data["id"] = "Primary";
@@ -4125,21 +4149,27 @@ define([
                                                 data["jsonData"] = model;
                                             formattedModel["data"] = [];
                                             formattedModel["data"].push(data);
-                                            finalData = JSON.stringify(formattedModel);
                                         }
+
                                     } else {
-                                        formattedModel = model;
-                                        finalData = formattedModel;
+                                        if (typeof (model) !== "object")
+                                            formattedModel = JSON.parse(model);
+                                        else
+                                            formattedModel = model;
                                     }
-                                    finalData = finalData.replace(/\s\s+/g, ' ');
-                                    if (url.indexOf("studio.arria.com") !== -1)
-                                        reqParams = "arriaURL=" + url + "&headername=Authorization&authKey=bearer " + authKey.value.trim() + "&appData=" + encodeURIComponent(finalData) + "&biSource=qliksense";
-                                    else if (authKey.value !== "")
-                                        reqParams = "arriaURL=" + url + "&headername=Authorization&authKey=bearer " + authKey.value.trim() + "&appData=" + encodeURIComponent(finalData) + "&biSource=qliksense";
-                                    else
-                                        reqParams = "arriaURL=" + url + "&appData=" + encodeURIComponent(finalData) + "&biSource=qliksense";
+                                    var headers = {
+                                        Authorization: 'bearer ' + authKey.value.trim()
+                                    }
+
+                                    var inputData = {
+                                        serviceURL: url,
+                                        headers: headers,
+                                        appData: formattedModel,
+                                        biSource: "qliksense",
+                                        type: 1
+                                    };
                                     if (window.navigator.onLine)
-                                        xmlhttp.send(reqParams);
+                                        xmlhttp.send(JSON.stringify(inputData));
                                     else
                                         showModal("You are offline. Please check that you are connected to the Internet", chartId);
 
@@ -4556,7 +4586,8 @@ define([
                                                 headerSection.style.display = "none";
                                                 let outputText = "";
                                                 outputText = xmlhttp.responseText;
-                                                outputText = outputText.trim();
+                                                if (outputText)
+                                                    outputText = outputText.trim();
                                                 try {
                                                     outputText = JSON.parse(outputText);
                                                 } catch (e) {
@@ -6066,7 +6097,6 @@ define([
             // getDataSet();
         },
         resize: function ($element, layout) {
-
             var chartId = $(this.$element[0]).find('.container').attr('id').split('_')[1];
             var resizeElement = document.querySelector('div[tid="' + chartId + '"]');
             chartId = "_" + chartId;
@@ -6076,33 +6106,37 @@ define([
                 containerWidth = qlikContainer.width();
             }
             var elementHeight;
-            maximize = true;
-            if ($(".qv-gridcell.active").height() != undefined) {
-                maximize = false;
+            if ($(".qv-gridcell.active").height() != undefined) 
                 elementHeight = parseInt($(".qv-gridcell.active").height()) - 60;
-            }
+            
 
 
 
             if (elementHeight == undefined) {
-
-                if (qlik.navigation.getMode() !== "edit" || maximize) {
-                    maximize = true;
-                    document.getElementById('disable' + chartId).style.display = "none";
-                }
                 if (resizeElement)
                     elementHeight = parseInt(resizeElement.clientHeight) - 60;
             }
-            if (!maximize) {
-                if (qlik.navigation.getMode() == "edit")
-                    document.getElementById('disable' + chartId).style.display = "block";
+
+            if (qlik.navigation.getMode() == "edit") {
+                let resizeIcon = document.querySelector('a.lui-icon--collapse');
+                if (resizeIcon !== null)
+                    resizeIcon = resizeIcon.classList.contains('ng-hide');
+                if (resizeIcon) {
+                    maximize = false;
+                } else {
+                    maximize = true;
+                }
             } else {
-                if (qlik.navigation.getMode() == "edit")
-                    if (document.querySelector('a.lui-icon--remove') != null)
-                        document.getElementById('disable' + chartId).style.display = "none";
-                    else
-                        document.getElementById('disable' + chartId).style.display = "block";
+                maximize = true;
             }
+
+            if (maximize) {
+                document.getElementById('disable' + chartId).style.display = "none";
+            }
+            else {
+                document.getElementById('disable' + chartId).style.display = "block";
+            }
+
             if (elementHeight !== undefined) {
                 $('#qlikContainer' + chartId).css({
                     'height': elementHeight + 'px'

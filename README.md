@@ -1,3 +1,4 @@
+# Qliksense
 # Natural Language Insights for BI - Arria NLG Extension for Qlik Sense
 
 ### Add out-of-the-box or custom narratives for any visuals, or the dataset, across the entire dashboard
@@ -61,4 +62,8 @@ User has deploy Qliksense  in two ways Download or Clone the repository
 #### Clone the Repository:
    - Clone the repository in C:\Users\<username>\Documents\Qlik\Sense\Extensions path
 
+#### Steps to build:
+    - npm install
+    - npm run build
 
+Use qliksense-add-in-src.zip file inside dist folder.
