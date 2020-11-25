@@ -3196,19 +3196,19 @@ define([
 
 
                             function disableEditMode() {
-                                if (qlik.navigation.getMode() === "edit") {
-                                    if (!maximize)
-                                        disableContainer.style.display = "block";
+                                if (qlik.navigation.getMode() === "edit" && !maximize) {
+                                    disableContainer.style.display = "block";
                                 } else {
                                     disableContainer.style.display = "none";
                                 }
-
                             }
 
                             disableContainer.addEventListener('click', function () {
-                                if (document.getElementById('modal' + chartId).style.display == "none") {
-                                    document.getElementById('closemodal' + chartId).style.marginBottom = "40px";
-                                    showModal("<img class='resize-disable' src='" + apiEndpoint + "arria/images/qs_max_icon.png'> Please use the maximised view for configuration", chartId);
+                                if(!maximize){
+                                    if (document.getElementById('modal' + chartId).style.display == "none") {
+                                        document.getElementById('closemodal' + chartId).style.marginBottom = "40px";
+                                        showModal("<img class='resize-disable' src='" + apiEndpoint + "arria/images/qs_max_icon.png'> Please use the maximized view for configuration", chartId);
+                                    }
                                 }
                             });
                             /**
@@ -6097,7 +6097,6 @@ define([
             // getDataSet();
         },
         resize: function ($element, layout) {
-
             var chartId = $(this.$element[0]).find('.container').attr('id').split('_')[1];
             var resizeElement = document.querySelector('div[tid="' + chartId + '"]');
             chartId = "_" + chartId;
@@ -6107,33 +6106,37 @@ define([
                 containerWidth = qlikContainer.width();
             }
             var elementHeight;
-            maximize = true;
-            if ($(".qv-gridcell.active").height() != undefined) {
-                maximize = false;
+            if ($(".qv-gridcell.active").height() != undefined) 
                 elementHeight = parseInt($(".qv-gridcell.active").height()) - 60;
-            }
+            
 
 
 
             if (elementHeight == undefined) {
-
-                if (qlik.navigation.getMode() !== "edit" || maximize) {
-                    maximize = true;
-                    document.getElementById('disable' + chartId).style.display = "none";
-                }
                 if (resizeElement)
                     elementHeight = parseInt(resizeElement.clientHeight) - 60;
             }
-            if (!maximize) {
-                if (qlik.navigation.getMode() == "edit")
-                    document.getElementById('disable' + chartId).style.display = "block";
+
+            if (qlik.navigation.getMode() == "edit") {
+                let resizeIcon = document.querySelector('a.lui-icon--collapse');
+                if (resizeIcon !== null)
+                    resizeIcon = resizeIcon.classList.contains('ng-hide');
+                if (resizeIcon) {
+                    maximize = false;
+                } else {
+                    maximize = true;
+                }
             } else {
-                if (qlik.navigation.getMode() == "edit")
-                    if (document.querySelector('a.lui-icon--remove') != null)
-                        document.getElementById('disable' + chartId).style.display = "none";
-                    else
-                        document.getElementById('disable' + chartId).style.display = "block";
+                maximize = true;
             }
+
+            if (maximize) {
+                document.getElementById('disable' + chartId).style.display = "none";
+            }
+            else {
+                document.getElementById('disable' + chartId).style.display = "block";
+            }
+
             if (elementHeight !== undefined) {
                 $('#qlikContainer' + chartId).css({
                     'height': elementHeight + 'px'
