@@ -45,9 +45,8 @@ define([
     var autoIncrementID = true;
     var presistSimplecheck = "";
     var presistAdvanceCheck = "";
-    var maximize = false;
     var fingerPrintKey = "";
-    var projectArgumentsNarrative = {};
+    var projectArgumentsNarrative = {};    
     getEntitiesForOOTB();
     getFingerPrintKey();
 
@@ -1100,8 +1099,7 @@ define([
                                 cogWheel.style.display = "none";
                             else
                                 cogWheel.style.display = "block";
-                            initialViewVisibility();
-                            disableEditMode();
+                            initialViewVisibility();                            
 
                             let drillDownUserData = getDrillDownUserInputData(layout) || {};
                             let drillDownDataKeys = Object.keys(drillDownUserData);
@@ -1312,7 +1310,6 @@ define([
                                                     unit.setAttribute('name', 'unit' + index + chartId);
                                                     let increaseContainer = document.getElementById('increase-container' + dataid + chartId);
                                                     increaseContainer.setAttribute('id', 'increase-container' + index + chartId);
-
                                                 }
                                             }
                                         }
@@ -2061,18 +2058,16 @@ define([
                              * @returns 
                              */
                             containerElement.addEventListener('mouseover', function () {
+                                
                                 if (targetElement === "narrativeView" && narrativeSection.style.display === "block") {
                                     var currentMode = qlik.navigation.getMode();
                                     if (currentMode !== "analysis")
                                         cogWheel.style.display = "block";
                                     copyClipboardBtn.style.display = "block";
                                 }
+                                
                                 if (qlik.navigation.getMode() !== "edit")
                                     disableContainer.style.display = "none";
-                                else {
-                                    if (!maximize)
-                                        disableContainer.style.display = "block";
-                                }
                             });
 
                             /**
@@ -3193,24 +3188,7 @@ define([
                                 } else
                                     ootb_generateBtn.setAttribute('disabled', true);
                             }
-
-
-                            function disableEditMode() {
-                                if (qlik.navigation.getMode() === "edit" && !maximize) {
-                                    disableContainer.style.display = "block";
-                                } else {
-                                    disableContainer.style.display = "none";
-                                }
-                            }
-
-                            disableContainer.addEventListener('click', function () {
-                                if(!maximize){
-                                    if (document.getElementById('modal' + chartId).style.display == "none") {
-                                        document.getElementById('closemodal' + chartId).style.marginBottom = "40px";
-                                        showModal("<img class='resize-disable' src='" + apiEndpoint + "arria/images/qs_max_icon.png'> Please use the maximized view for configuration", chartId);
-                                    }
-                                }
-                            });
+                            
                             /**
                              * @methodOf: Simple UI
                              * @description The function to Toggle DataJSON Container
@@ -4002,7 +3980,6 @@ define([
                              * @description The Function Generate Simple UI Narrative Text
                              * @returns 
                              */
-
                             function callUpdate(url) {
                                 let pageLoader = document.getElementById('pageloader' + chartId);
                                 if (pageLoader.style.display == "none")
@@ -4999,9 +4976,10 @@ define([
                                                                 elementHtml += '<div class="card-content col-md-12"><div class="col-md-6 distribution-container"><div class="distribution"><span class="ranking">Ranking:</span><p> <input type="radio" name="rank' + chartId + '" id="rank-domain' + chartId + '"><label for="rank-domain' + chartId + '">Use selected attribute order</label></p><p><input type="radio" name="rank' + chartId + '" id="rank-data' + chartId + '" checked><label for="rank-data' + chartId + '" >Let us decide</label></p> </div><div class="distribution"><input type="checkbox" name="datadriven' + chartId + '" id="analysis' + chartId + '"><label for="analysis' + chartId + '">Include distribution analysis</label> </div></div></div>';
                                                                 element.innerHTML = elementHtml;
                                                                 analysisContainer.appendChild(element);
+                                                                let statsCheck = document.querySelector('input[name="stats' + chartId + '"]');
                                                                 if (!analysis.stats) {
-                                                                    let statsCheck = document.querySelector('input[name="stats' + chartId + '"]');
                                                                     statsCheck.checked = false;
+                                                                    statsCheck.disabled = true;
                                                                 }
                                                                 break;
                                                             case 'variance':
@@ -5035,9 +5013,10 @@ define([
                                                                 variancespanElement.innerHTML = variancerangeValue;
                                                                 variancespanElement.style.left = variancerangeValue - 8 + "%";
                                                                 addMeasureTargetVariance();
+                                                                let varianceCheck = document.querySelector('input[name="variance' + chartId + '"]');
                                                                 if (!analysis.variance) {
-                                                                    let varianceCheck = document.querySelector('input[name="variance' + chartId + '"]');
                                                                     varianceCheck.checked = false;
+                                                                    varianceCheck.disabled = true;
                                                                 }
                                                                 break;
                                                             case 'correlations':
@@ -5059,9 +5038,10 @@ define([
                                                                 lowRange.addEventListener('change', changeRangeValue);
                                                                 strongRange.addEventListener('change', changeRangeValue);
                                                                 addMeasureHeader();
+                                                                let correlationsCheck = document.querySelector('input[name="correlations' + chartId + '"]');
                                                                 if (!analysis.correlations) {
-                                                                    let correlationsCheck = document.querySelector('input[name="correlations' + chartId + '"]');
                                                                     correlationsCheck.checked = false;
+                                                                    correlationsCheck.disabled = true;
                                                                 }
                                                                 let correlationSpanWidth = document.querySelector('.multiple-range span:first-child').clientWidth;
                                                                 let correlationWidth = document.querySelector('.multiple-range').clientWidth;
@@ -5074,7 +5054,7 @@ define([
                                                                 break;
                                                             case 'timeSeries':
                                                                 elementHtml += '<div class="card-header ' + getKeyValue[index] + chartId + ' ' + getKeyValue[index] + '"> <div class="drag-holder" style="background-image:url(' + apiEndpoint + 'arria/images/drag.png)"></div><input type="checkbox" name="' + getKeyValue[index] + chartId + '" checked>Time series <span>(Select at least a measure and a date time from step 1)</span><img class="card-toggle ' + getKeyValue[index] + chartId + ' ' + getKeyValue[index] + '" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDI4NC45MjkgMjg0LjkyOSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjg0LjkyOSAyODQuOTI5OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTI4Mi4wODIsNzYuNTExbC0xNC4yNzQtMTQuMjczYy0xLjkwMi0xLjkwNi00LjA5My0yLjg1Ni02LjU3LTIuODU2Yy0yLjQ3MSwwLTQuNjYxLDAuOTUtNi41NjMsMi44NTZMMTQyLjQ2NiwxNzQuNDQxICAgTDMwLjI2Miw2Mi4yNDFjLTEuOTAzLTEuOTA2LTQuMDkzLTIuODU2LTYuNTY3LTIuODU2Yy0yLjQ3NSwwLTQuNjY1LDAuOTUtNi41NjcsMi44NTZMMi44NTYsNzYuNTE1QzAuOTUsNzguNDE3LDAsODAuNjA3LDAsODMuMDgyICAgYzAsMi40NzMsMC45NTMsNC42NjMsMi44NTYsNi41NjVsMTMzLjA0MywxMzMuMDQ2YzEuOTAyLDEuOTAzLDQuMDkzLDIuODU0LDYuNTY3LDIuODU0czQuNjYxLTAuOTUxLDYuNTYyLTIuODU0TDI4Mi4wODIsODkuNjQ3ICAgYzEuOTAyLTEuOTAzLDIuODQ3LTQuMDkzLDIuODQ3LTYuNTY1QzI4NC45MjksODAuNjA3LDI4My45ODQsNzguNDE3LDI4Mi4wODIsNzYuNTExeiIgZmlsbD0iIzk4OTg5OCIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo="></div>';
-                                                                elementHtml += '<div class="card-content text-center"><div class="col-md-8"><span>Sensitivity</span> 0 <label class="range-position"><input type="range" min="1" max="100" value="50" class="range-slide"><span class="slide-span">50</span></label>100</div></div>';
+                                                                elementHtml += '<div class="card-content text-center"><div class="col-md-8"><span>Sensitivity</span> 0 <label class="range-position"><input type="range" min="1" max="100" value="50" class="range-slide "><span class="slide-span">50</span></label>100</div></div>';
                                                                 element.innerHTML = elementHtml;
                                                                 analysisContainer.appendChild(element);
                                                                 let timerangeValue = document.querySelector('#' + getKeyValue[index] + chartId + " " + '.range-slide');
@@ -5083,9 +5063,10 @@ define([
                                                                 let timespanElement = document.querySelector('#' + getKeyValue[index] + chartId + " " + '.slide-span');
                                                                 timespanElement.innerHTML = timerangeValue;
                                                                 timespanElement.style.left = timerangeValue - 8 + "%";
+                                                                let timeSeriesCheck = document.querySelector('input[name="timeSeries' + chartId + '"]');
                                                                 if (!analysis.timeSeries) {
-                                                                    let timeSeriesCheck = document.querySelector('input[name="timeSeries' + chartId + '"]');
                                                                     timeSeriesCheck.checked = false;
+                                                                    timeSeriesCheck.disabled = true;
                                                                 }
                                                                 break;
                                                             default:
@@ -6017,7 +5998,7 @@ define([
                                                                             option.selected = true;
                                                                         }
                                                                         selectElement.appendChild(option);
-                                                                    }
+                                                                    };
                                                                 }
                                                             }
                                                         }
@@ -6097,272 +6078,268 @@ define([
             // getDataSet();
         },
         resize: function ($element, layout) {
-            var chartId = $(this.$element[0]).find('.container').attr('id').split('_')[1];
-            var resizeElement = document.querySelector('div[tid="' + chartId + '"]');
-            chartId = "_" + chartId;
-            var containerWidth = 0;
-            var qlikContainer = $('#qlikContainer' + chartId);
-            if (qlikContainer) {
-                containerWidth = qlikContainer.width();
-            }
-            var elementHeight;
-            if ($(".qv-gridcell.active").height() != undefined) 
-                elementHeight = parseInt($(".qv-gridcell.active").height()) - 60;
-            
-
-
-
-            if (elementHeight == undefined) {
-                if (resizeElement)
-                    elementHeight = parseInt(resizeElement.clientHeight) - 60;
-            }
-
-            if (qlik.navigation.getMode() == "edit") {
-                let resizeIcon = document.querySelector('a.lui-icon--collapse');
-                if (resizeIcon !== null)
-                    resizeIcon = resizeIcon.classList.contains('ng-hide');
-                if (resizeIcon) {
-                    maximize = false;
+            try {
+                var parentContainerWidth;
+                if ($("#grid-wrap").width() != undefined) 
+                    parentContainerWidth = parseInt($("#grid-wrap").width());
+               
+                var chartId = $(this.$element[0]).find('.container').attr('id').split('_')[1];
+                var resizeElement = document.querySelector('div[tid="' + chartId + '"]');
+                chartId = "_" + chartId;
+                var containerWidth = 0;
+                var qlikContainer = $('#qlikContainer' + chartId);
+                if (qlikContainer) {
+                    containerWidth = qlikContainer.width();
+                }
+                var elementHeight;
+                if ($(".qv-gridcell.active").height() != undefined) 
+                    elementHeight = parseInt($(".qv-gridcell.active").height()) - 60;
+                
+    
+    
+    
+                if (elementHeight == undefined) {
+                    if (resizeElement)
+                        elementHeight = parseInt(resizeElement.clientHeight) - 60;
+                }
+    
+                if (qlik.navigation.getMode() == "edit") {
+                    let resizeIcon = document.querySelector('a.lui-icon--collapse');
+                    if (resizeIcon !== null)
+                        resizeIcon = resizeIcon.classList.contains('ng-hide');
+                    
+                } 
+       
+                    
+                if (elementHeight !== undefined) {
+                    $('#qlikContainer' + chartId).css({
+                        'height': elementHeight + 'px'
+                    });
+                    $('#narrative-section' + chartId).css({
+                        height: elementHeight + 'px'
+                    });
+                }
+    
+                if (containerWidth >= 840)
+                    $("#responsive-840qlikContainer" + chartId).remove();
+                if (containerWidth >= 765 && containerWidth >= 641)
+                    $('#responsive-765qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 760)
+                    $('#responsive-760qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 640)
+                    $('#responsive-640qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 540)
+                    $('#responsive-540qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 500)
+                    $('#responsive-500qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 460)
+                    $('#responsive-460qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 420)
+                    $('#responsive-420qlikContainer' + chartId).remove();
+    
+                if (containerWidth >= 400)
+                    $("#responsive-400qlikContainer" + chartId).remove();
+    
+                if (containerWidth >= 340)
+                    $("#responsive-340qlikContainer" + chartId).remove();
+    
+    
+                var id = "#" + qlikContainer[0].id + " ";
+    
+                var responsive840 = '#840' + qlikContainer[0].id;
+                if (containerWidth <= 840) {
+                    if (!$(responsive840).length) {
+                        var style = "";
+                        style += '' + id + '.outofbox-tabsection .entity-selction p:first-child{text-align:left;margin-left:0px;}';
+                        $('<style id=840' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                    }
                 } else {
-                    maximize = true;
+                    $('#840' + qlikContainer[0].id).remove();
                 }
-            } else {
-                maximize = true;
-            }
-
-            if (maximize) {
-                document.getElementById('disable' + chartId).style.display = "none";
-            }
-            else {
-                document.getElementById('disable' + chartId).style.display = "block";
-            }
-
-            if (elementHeight !== undefined) {
-                $('#qlikContainer' + chartId).css({
-                    'height': elementHeight + 'px'
-                });
-                $('#narrative-section' + chartId).css({
-                    height: elementHeight + 'px'
-                });
-            }
-
-            if (containerWidth >= 840)
-                $("#responsive-840qlikContainer" + chartId).remove();
-            if (containerWidth >= 765 && containerWidth >= 641)
-                $('#responsive-765qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 760)
-                $('#responsive-760qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 640)
-                $('#responsive-640qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 540)
-                $('#responsive-540qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 500)
-                $('#responsive-500qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 460)
-                $('#responsive-460qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 420)
-                $('#responsive-420qlikContainer' + chartId).remove();
-
-            if (containerWidth >= 400)
-                $("#responsive-400qlikContainer" + chartId).remove();
-
-            if (containerWidth >= 340)
-                $("#responsive-340qlikContainer" + chartId).remove();
-
-
-            var id = "#" + qlikContainer[0].id + " ";
-
-            var responsive840 = '#840' + qlikContainer[0].id;
-            if (containerWidth <= 840) {
-                if (!$(responsive840).length) {
-                    var style = "";
-                    style += '' + id + '.outofbox-tabsection .entity-selction p:first-child{text-align:left;margin-left:0px;}';
-                    $('<style id=840' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                var responsive765 = '#765' + qlikContainer[0].id;
+                if (containerWidth <= 765 && containerWidth >= 641) {
+                    if (!$(responsive765).length) {
+                        var styleElement = "";
+                        var id = '#qlikContainer' + chartId + " ";
+                        styleElement += '' + id + '.measure-list span { display: block; text-align: center; margin-bottom: 8px; }';
+                        styleElement += '' + id + '.variance .col-md-4 label{display:block; margin-bottom: 8px;}';
+                        $('<style id=765' + qlikContainer[0].id + '>').html(styleElement).appendTo("head");
+                    }
+    
+                } else {
+                    $('#765' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#840' + qlikContainer[0].id).remove();
-            }
-            var responsive765 = '#765' + qlikContainer[0].id;
-            if (containerWidth <= 765 && containerWidth >= 641) {
-                if (!$(responsive765).length) {
-                    var styleElement = "";
-                    var id = '#qlikContainer' + chartId + " ";
-                    styleElement += '' + id + '.measure-list span { display: block; text-align: center; margin-bottom: 8px; }';
-                    styleElement += '' + id + '.variance .col-md-4 label{display:block; margin-bottom: 8px;}';
-                    $('<style id=765' + qlikContainer[0].id + '>').html(styleElement).appendTo("head");
+                var responsive760 = '#760' + qlikContainer[0].id;
+                if (containerWidth <= 760) {
+                    if (!$(responsive760).length) {
+                        var styleElement = "";
+                        var id = '#qlikContainer' + chartId + " ";
+                        styleElement += '' + id + '.narrative-tabsection .auth-header .col-md-8,' + id + '.narrative-tabsection .auth-header .col-md-4 { width: 100% !important; padding-right: 0px; padding-left: 0px; }';
+                        $('<style id=760' + qlikContainer[0].id + '>').html(styleElement).appendTo("head");
+                    }
+                } else {
+                    $('#760' + qlikContainer[0].id).remove();
                 }
-
-            } else {
-                $('#765' + qlikContainer[0].id).remove();
-            }
-            var responsive760 = '#760' + qlikContainer[0].id;
-            if (containerWidth <= 760) {
-                if (!$(responsive760).length) {
-                    var styleElement = "";
-                    var id = '#qlikContainer' + chartId + " ";
-                    styleElement += '' + id + '.narrative-tabsection .auth-header .col-md-8,' + id + '.narrative-tabsection .auth-header .col-md-4 { width: 100% !important; padding-right: 0px; padding-left: 0px; }';
-                    $('<style id=760' + qlikContainer[0].id + '>').html(styleElement).appendTo("head");
+                var ootbMediumStyleId = '#640_OOTB' + qlikContainer[0].id;
+                if (containerWidth <= 640) {
+                    if (!$(ootbMediumStyleId).length) {
+                        var styleElement = "";
+                        styleElement += '' + id + '.outofbox-tabsection .entity-selction p{margin-left:0px!important}';
+                        styleElement += '' + id + '.card-field .col-md-6{text-align:left!important}';
+                        styleElement += '' + id + '.tell-data .card-content .col-md-12:first-child .col-md-6,.tell-data .card-content .col-md-12:first-child .col-md-6 p{margin-bottom:0px!important}';
+                        styleElement += '' + id + '.tell-data .card-content .col-md-6{width:100%!important;text-align:left!important}';
+                        styleElement += '' + id + '.measure-list .col-md-4{width:100%!important}';
+                        styleElement += '' + id + '.tell-data .card-content .col-md-12:first-child .col-md-6 p:last-child{margin-left:15%}';
+                        styleElement += '' + id + '.measure-list{margin-top:20px}';
+                        styleElement += '' + id + '.col-md-12.measure-list.text-center{text-align:left!important}';
+                        styleElement += '' + id + '.measure-list .col-md-4 select{width:62%!important}';
+                        styleElement += '' + id + '.measure-list .col-md-4 input{width:60%}';
+                        styleElement += '' + id + '.measure-list .col-md-4 span{width:30%;display:inline-block}';
+                        styleElement += '' + id + '.tell-what .col-md-6{width:100%!important}';
+                        styleElement += '' + id + '.outofbox-tabsection .stats .card-content .col-md-6:first-child{text-align:left!important}';
+                        styleElement += '' + id + '.targetbasedvariance .col-md-4 label{width:30%;display:inline-block}';
+                        styleElement += '' + id + '.targetbasedvariance .col-md-4{width:100%!important}';
+                        styleElement += '' + id + '.targetbasedvariance .col-md-4:nth-child(2) select{width:60%!important;margin-left:10px!important}';
+                        styleElement += '' + id + '.entity-selction p{width:100%!important}';
+                        styleElement += '' + id + '.timebasedvariance .col-md-4{width:100%!important}';
+                        styleElement += '' + id + '.variance .col-md-4 label{width:30%;display:inline-block}';
+                        styleElement += '' + id + '.multiple-range.col-md-8,' + id + '.correlations .col-md-8{width:100%!important}';
+                        styleElement += '' + id + '.measure-list span{text-align:left;}';
+                        styleElement += '' + id + '.measure-list.text-left{text-align:left;}';
+                        styleElement += '' + id + 'div.distribution:last-child { display: block; margin-left: 52px !important; }';
+                        styleElement += '' + id + '.timebasedvariance, ' + id + '.targetbasedvariance{text-align:left !important;}';
+                        styleElement += '' + id + '.outofbox-tabsection .variance .col-md-4 select{width: 60%;padding: 5px;height:auto;}';
+                        styleElement += '' + id + '.outofbox-tabsection .entity-selction p:first-child{text-align:left;}';
+                        styleElement += '' + id + '.outofbox-tabsection .correlations .card-content .col-md-8:first-child p { float: none; display: block; text-align: left; }';
+                        styleElement += '' + id + '.outofbox-tabsection .correlations .card-content .col-md-8:first-child .measure-container{text-align:left;display: block;}';
+                        styleElement += '' + id + '.card .card-content .measure-list.text-center select{margin-left:12px !important}';
+                        styleElement += '' + id + '.multiple-range label { margin-top: 40px; }';
+                        $('<style id=640_OOTB' + qlikContainer[0].id + '>').html(styleElement).appendTo("head");
+                    }
+                } else {
+                    $('#640_OOTB' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#760' + qlikContainer[0].id).remove();
-            }
-            var ootbMediumStyleId = '#640_OOTB' + qlikContainer[0].id;
-            if (containerWidth <= 640) {
-                if (!$(ootbMediumStyleId).length) {
-                    var styleElement = "";
-                    styleElement += '' + id + '.outofbox-tabsection .entity-selction p{margin-left:0px!important}';
-                    styleElement += '' + id + '.card-field .col-md-6{text-align:left!important}';
-                    styleElement += '' + id + '.tell-data .card-content .col-md-12:first-child .col-md-6,.tell-data .card-content .col-md-12:first-child .col-md-6 p{margin-bottom:0px!important}';
-                    styleElement += '' + id + '.tell-data .card-content .col-md-6{width:100%!important;text-align:left!important}';
-                    styleElement += '' + id + '.measure-list .col-md-4{width:100%!important}';
-                    styleElement += '' + id + '.tell-data .card-content .col-md-12:first-child .col-md-6 p:last-child{margin-left:15%}';
-                    styleElement += '' + id + '.measure-list{margin-top:20px}';
-                    styleElement += '' + id + '.col-md-12.measure-list.text-center{text-align:left!important}';
-                    styleElement += '' + id + '.measure-list .col-md-4 select{width:62%!important}';
-                    styleElement += '' + id + '.measure-list .col-md-4 input{width:60%}';
-                    styleElement += '' + id + '.measure-list .col-md-4 span{width:30%;display:inline-block}';
-                    styleElement += '' + id + '.tell-what .col-md-6{width:100%!important}';
-                    styleElement += '' + id + '.outofbox-tabsection .stats .card-content .col-md-6:first-child{text-align:left!important}';
-                    styleElement += '' + id + '.targetbasedvariance .col-md-4 label{width:30%;display:inline-block}';
-                    styleElement += '' + id + '.targetbasedvariance .col-md-4{width:100%!important}';
-                    styleElement += '' + id + '.targetbasedvariance .col-md-4:nth-child(2) select{width:60%!important;margin-left:10px!important}';
-                    styleElement += '' + id + '.entity-selction p{width:100%!important}';
-                    styleElement += '' + id + '.timebasedvariance .col-md-4{width:100%!important}';
-                    styleElement += '' + id + '.variance .col-md-4 label{width:30%;display:inline-block}';
-                    styleElement += '' + id + '.multiple-range.col-md-8,' + id + '.correlations .col-md-8{width:100%!important}';
-                    styleElement += '' + id + '.measure-list span{text-align:left;}';
-                    styleElement += '' + id + '.measure-list.text-left{text-align:left;}';
-                    styleElement += '' + id + 'div.distribution:last-child { display: block; margin-left: 52px !important; }';
-                    styleElement += '' + id + '.timebasedvariance, ' + id + '.targetbasedvariance{text-align:left !important;}';
-                    styleElement += '' + id + '.outofbox-tabsection .variance .col-md-4 select{width: 60%;padding: 5px;height:auto;}';
-                    styleElement += '' + id + '.outofbox-tabsection .entity-selction p:first-child{text-align:left;}';
-                    styleElement += '' + id + '.outofbox-tabsection .correlations .card-content .col-md-8:first-child p { float: none; display: block; text-align: left; }';
-                    styleElement += '' + id + '.outofbox-tabsection .correlations .card-content .col-md-8:first-child .measure-container{text-align:left;display: block;}';
-                    styleElement += '' + id + '.card .card-content .measure-list.text-center select{margin-left:12px !important}';
-                    styleElement += '' + id + '.multiple-range label { margin-top: 40px; }';
-                    $('<style id=640_OOTB' + qlikContainer[0].id + '>').html(styleElement).appendTo("head");
+                var ootbSmallStyleId = '#540_OOTB' + qlikContainer[0].id;
+                if (containerWidth <= 540) {
+                    if (!$(ootbSmallStyleId).length) {
+                        var ootbStyle = "";
+                        ootbStyle += '' + id + '.tell-data .card-content .col-md-12:first-child .col-md-6 p:last-child{margin-left:10%}';
+                        ootbStyle += '' + id + '.tell-data .card-content .col-md-6:last-child p:first-child{margin-left:5%!important}';
+                        ootbStyle += '' + id + '#correlations' + chartId + ' .multiple-range label {margin-top: 40px;}';
+                        $('<style id=540_OOTB' + qlikContainer[0].id + '>').html(ootbStyle).appendTo("head");
+                    }
+                } else {
+                    $('#540_OOTB' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#640_OOTB' + qlikContainer[0].id).remove();
-            }
-            var ootbSmallStyleId = '#540_OOTB' + qlikContainer[0].id;
-            if (containerWidth <= 540) {
-                if (!$(ootbSmallStyleId).length) {
-                    var ootbStyle = "";
-                    ootbStyle += '' + id + '.tell-data .card-content .col-md-12:first-child .col-md-6 p:last-child{margin-left:10%}';
-                    ootbStyle += '' + id + '.tell-data .card-content .col-md-6:last-child p:first-child{margin-left:5%!important}';
-                    ootbStyle += '' + id + '#correlations' + chartId + ' .multiple-range label {margin-top: 40px;}';
-                    $('<style id=540_OOTB' + qlikContainer[0].id + '>').html(ootbStyle).appendTo("head");
+                var ootbExtraStyleId = '#500_OOTB' + qlikContainer[0].id;
+                if (containerWidth <= 500) {
+                    if (!$(ootbExtraStyleId).length) {
+                        var ootbStyle = "";
+                        ootbStyle += '' + id + '.multiple-range label{margin-top:40px}';
+                        ootbStyle += '' + id + '.accordian-summary span { display: block; text-align: left; }';
+                        $('<style id=500_OOTB' + qlikContainer[0].id + '>').html(ootbStyle).appendTo("head");
+                    }
+                } else {
+                    $('#500_OOTB' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#540_OOTB' + qlikContainer[0].id).remove();
-            }
-            var ootbExtraStyleId = '#500_OOTB' + qlikContainer[0].id;
-            if (containerWidth <= 500) {
-                if (!$(ootbExtraStyleId).length) {
-                    var ootbStyle = "";
-                    ootbStyle += '' + id + '.multiple-range label{margin-top:40px}';
-                    ootbStyle += '' + id + '.accordian-summary span { display: block; text-align: left; }';
-                    $('<style id=500_OOTB' + qlikContainer[0].id + '>').html(ootbStyle).appendTo("head");
+    
+                var simpleLargeStyleId = "#640_simple" + qlikContainer[0].id;
+                if (containerWidth < 640) {
+                    if (!$(simpleLargeStyleId).length) {
+                        var style = "";
+                        style += '' + id + '.studio-options .col-md-3,' + id + '.studio-options .col-md-9{display:block;width:100%!important}';
+                        style += '' + id + '.studio-options .col-md-9 p:first-child{margin:0!important}';
+                        style += '' + id + '.studio-options .col-md-9 p{display:block!important;margin:10px 0px !important;}';
+                        style += '' + id + '.edit-mapsection{display:inline-block!important}';
+                        style += '' + id + '.export,' + id + '.data-json,' + id + '.csvload{width:100%!important;margin-bottom:10px}';
+                        style += '' + id + '.edit-mapsection .export,' + id + '.edit-mapsection .data-json{float:none!important}';
+                        style += '' + id + 'footer{text-align:center;position:relative;min-height:100px;margin-bottom:10px}';
+                        style += '' + id + 'footer .col-md-2{width:100%!important;text-align:center;position:absolute;bottom:0;right:0;left:0}';
+                        style += '' + id + 'footer .col-md-10.text-right{text-align:center!important;width:100%!important}';
+                        style += '' + id + '.dynamic-header .auth-header .col-md-4{padding-right:0}';
+                        style += '' + id + '.dynamic-header .col-md-4,.dynamic-header .col-md-8{width:100%!important}';
+                        style += '' + id + '.studio-type{width:100%!important;position:relative;margin-top:15px;float:none}';
+                        style += '' + id + '.studio-type .col-md-3{width:15%!important;float:left;text-align:right;margin-top:10px}';
+                        style += '' + id + '.studio-type .col-md-9{width:69%!important;float:left;padding-left:25px}';
+                        style += '' + id + '.studio-type .col-md-9 p{margin-bottom:10px!important}';
+                        style += '' + id + '.simple-mode .studio-options .col-md-3 p{margin-bottom:16px;}';
+                        style += '' + id + '.edit-mapsection{padding-bottom: 0px;}';
+                        $('<style id=640_simple' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                    }
+                } else {
+                    $('#640_simple' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#500_OOTB' + qlikContainer[0].id).remove();
-            }
-
-            var simpleLargeStyleId = "#640_simple" + qlikContainer[0].id;
-            if (containerWidth < 640) {
-                if (!$(simpleLargeStyleId).length) {
-                    var style = "";
-                    style += '' + id + '.studio-options .col-md-3,' + id + '.studio-options .col-md-9{display:block;width:100%!important}';
-                    style += '' + id + '.studio-options .col-md-9 p:first-child{margin:0!important}';
-                    style += '' + id + '.studio-options .col-md-9 p{display:block!important;margin:10px 0px !important;}';
-                    style += '' + id + '.edit-mapsection{display:inline-block!important}';
-                    style += '' + id + '.export,' + id + '.data-json,' + id + '.csvload{width:100%!important;margin-bottom:10px}';
-                    style += '' + id + '.edit-mapsection .export,' + id + '.edit-mapsection .data-json{float:none!important}';
-                    style += '' + id + 'footer{text-align:center;position:relative;min-height:100px;margin-bottom:10px}';
-                    style += '' + id + 'footer .col-md-2{width:100%!important;text-align:center;position:absolute;bottom:0;right:0;left:0}';
-                    style += '' + id + 'footer .col-md-10.text-right{text-align:center!important;width:100%!important}';
-                    style += '' + id + '.dynamic-header .auth-header .col-md-4{padding-right:0}';
-                    style += '' + id + '.dynamic-header .col-md-4,.dynamic-header .col-md-8{width:100%!important}';
-                    style += '' + id + '.studio-type{width:100%!important;position:relative;margin-top:15px;float:none}';
-                    style += '' + id + '.studio-type .col-md-3{width:15%!important;float:left;text-align:right;margin-top:10px}';
-                    style += '' + id + '.studio-type .col-md-9{width:69%!important;float:left;padding-left:25px}';
-                    style += '' + id + '.studio-type .col-md-9 p{margin-bottom:10px!important}';
-                    style += '' + id + '.simple-mode .studio-options .col-md-3 p{margin-bottom:16px;}';
-                    style += '' + id + '.edit-mapsection{padding-bottom: 0px;}';
-                    $('<style id=640_simple' + qlikContainer[0].id + '>').html(style).appendTo("head");
+    
+                var mediumStyleId = '#460' + qlikContainer[0].id;
+                if (containerWidth <= 460) {
+                    if (!$(mediumStyleId).length) {
+                        var style = "";
+                        style += '' + id + '.outofbox-tabsection .distribution-container .distribution:first-child p:last-child { margin-left: 62px; }';
+                        style += '' + id + '.multiple-range label,' + id + '.multiple-range label input{width: 320px !important;}';
+                        style += '' + id + '.increase-container span { display: block; margin-bottom: 15px; }' + id + '.tell-data .card-content .col-md-6:last-child p { display: block; float: left; }' + id + '.card-content .col-md-6:last-child p.good-container { margin-left: 0px !important; }';
+                        style += '' + id + '.tab-header button { margin-top: 30px; }';
+                        style += '' + id + '.tab-header a{top:initial;transform: translateY(-0%);}';
+                        $('<style id=460' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                    }
+                } else {
+                    $('#460' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#640_simple' + qlikContainer[0].id).remove();
-            }
-
-            var mediumStyleId = '#460' + qlikContainer[0].id;
-            if (containerWidth <= 460) {
-                if (!$(mediumStyleId).length) {
-                    var style = "";
-                    style += '' + id + '.outofbox-tabsection .distribution-container .distribution:first-child p:last-child { margin-left: 62px; }';
-                    style += '' + id + '.multiple-range label,' + id + '.multiple-range label input{width: 320px !important;}';
-                    style += '' + id + '.increase-container span { display: block; margin-bottom: 15px; }' + id + '.tell-data .card-content .col-md-6:last-child p { display: block; float: left; }' + id + '.card-content .col-md-6:last-child p.good-container { margin-left: 0px !important; }';
-                    style += '' + id + '.tab-header button { margin-top: 30px; }';
-                    style += '' + id + '.tab-header a{top:initial;transform: translateY(-0%);}';
-                    $('<style id=460' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                var simpleMediumStyleId = "#420_simple" + qlikContainer[0].id;
+                if (containerWidth < 420) {
+                    if (!$(simpleMediumStyleId).length) {
+                        var style = "";
+                        style += '' + id + '.studio-type .col-md-9{width:60%!important}' + id + '.studio-type .col-md-3{width:24 %!important}';
+                        style += '' + id + '.multiple-range label,' + id + ' .multiple-range label input{width: 260px !important;}';
+                        $('<style id=420_simple' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                    }
+                } else {
+                    $('#420_simple' + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#460' + qlikContainer[0].id).remove();
-            }
-            var simpleMediumStyleId = "#420_simple" + qlikContainer[0].id;
-            if (containerWidth < 420) {
-                if (!$(simpleMediumStyleId).length) {
-                    var style = "";
-                    style += '' + id + '.studio-type .col-md-9{width:60%!important}' + id + '.studio-type .col-md-3{width:24 %!important}';
-                    style += '' + id + '.multiple-range label,' + id + ' .multiple-range label input{width: 260px !important;}';
-                    $('<style id=420_simple' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                var headerStyleId = "#400_header" + qlikContainer[0].id;
+                if (containerWidth < 400) {
+                    if (!$(headerStyleId).length) {
+                        var style = "";
+                        style += '' + id + 'header .tab-header button{padding: 8px 2px !important;font-size:12px !important;}';
+                        $('<style id=400_header' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                    }
+                } else {
+                    $("#400_header" + qlikContainer[0].id).remove();
                 }
-            } else {
-                $('#420_simple' + qlikContainer[0].id).remove();
-            }
-            var headerStyleId = "#400_header" + qlikContainer[0].id;
-            if (containerWidth < 400) {
-                if (!$(headerStyleId).length) {
-                    var style = "";
-                    style += '' + id + 'header .tab-header button{padding: 8px 2px !important;font-size:12px !important;}';
-                    $('<style id=400_header' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                var btnStyleId = "#340_header" + qlikContainer[0].id;
+                if (containerWidth < 340) {
+                    if (!$(btnStyleId).length) {
+                        var style = "";
+                        style += '' + id + '.openstudio_btn{margin: 7px 5px 10px 0px;padding: 4px 10px;font-size: 12px;}';
+                        style += '' + id + '.generate_btn{margin: 7px 0;padding: 4px 10px; font-size: 12px;}';
+                        $('<style id=340_header' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                    }
+                } else {
+                    $("#340_header" + qlikContainer[0].id).remove();
                 }
-            } else {
-                $("#400_header" + qlikContainer[0].id).remove();
-            }
-            var btnStyleId = "#340_header" + qlikContainer[0].id;
-            if (containerWidth < 340) {
-                if (!$(btnStyleId).length) {
-                    var style = "";
-                    style += '' + id + '.openstudio_btn{margin: 7px 5px 10px 0px;padding: 4px 10px;font-size: 12px;}';
-                    style += '' + id + '.generate_btn{margin: 7px 0;padding: 4px 10px; font-size: 12px;}';
-                    $('<style id=340_header' + qlikContainer[0].id + '>').html(style).appendTo("head");
+                var tellDataContainer = document.getElementById('tell-what' + chartId);
+                var container = document.getElementById('qlikContainer' + chartId);
+                var windowWidth = container.clientWidth;
+    
+                if (tellDataContainer.style.display == "block") {
+                    if (windowWidth > 640) {
+                        let correlationSpanWidth = document.querySelector('#tell-what' + chartId + ' ' + '.multiple-range span:first-child').clientWidth;
+                        let correlationWidth = document.querySelector('#tell-what' + chartId + ' ' + '.multiple-range').clientWidth;
+                        let width = (correlationWidth - correlationSpanWidth) - 20;
+                        let labelElement = document.querySelector('#tell-what' + chartId + ' ' + '.multiple-range label');
+                        labelElement.style.width = width + "px";
+                        let inputElement = document.querySelectorAll('#tell-what' + chartId + ' ' + '.multi-range');
+                        inputElement[0].style.width = width + "px";
+                        inputElement[1].style.width = width + "px";
+                    }
                 }
-            } else {
-                $("#340_header" + qlikContainer[0].id).remove();
-            }
-            var tellDataContainer = document.getElementById('tell-what' + chartId);
-            var container = document.getElementById('qlikContainer' + chartId);
-            var windowWidth = container.clientWidth;
-
-            if (tellDataContainer.style.display == "block") {
-                if (windowWidth > 640) {
-                    let correlationSpanWidth = document.querySelector('#tell-what' + chartId + ' ' + '.multiple-range span:first-child').clientWidth;
-                    let correlationWidth = document.querySelector('#tell-what' + chartId + ' ' + '.multiple-range').clientWidth;
-                    let width = (correlationWidth - correlationSpanWidth) - 20;
-                    let labelElement = document.querySelector('#tell-what' + chartId + ' ' + '.multiple-range label');
-                    labelElement.style.width = width + "px";
-                    let inputElement = document.querySelectorAll('#tell-what' + chartId + ' ' + '.multi-range');
-                    inputElement[0].style.width = width + "px";
-                    inputElement[1].style.width = width + "px";
-                }
+            } catch(e){
+                console.log("error in resize ", e)
             }
         }
     }
