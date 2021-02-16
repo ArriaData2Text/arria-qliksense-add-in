@@ -25,7 +25,7 @@ By adding Arria’s powerful NLG functionality to your Qlik Sense Desktop, you e
 
 **Features:**
 
-- Narratives are fully interactive
+- Narratives are fully interactives
 
 - Narratives created for any type of data-driven visual, or even for underlying data not visualized in your report
 
