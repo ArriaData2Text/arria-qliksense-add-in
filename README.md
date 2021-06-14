@@ -5,6 +5,7 @@ Add natural language generation (NLG) — out-of-the-box — to augment your das
 Quickly identify, communicate, and action key insights. This extension provides two powerful components:
 
 • a range of configurable, out-of-the-box NLG narratives for instant, expert analysis and reporting
+
 • an embedded chat platform for rapid answers to specific questions.
 
 Arria&#39;s extension enables you to add natural language generation (NLG) capabilities to your dashboard, generating narratives based on the entire dataset beneath it. With expert narrative generated from the entire dataset, critical facts and insights that might otherwise be missed are now shown—resulting in faster, better-informed decision-making. Use this extension on any dashboard or data model you have in Qlik Sense.
