@@ -65,3 +65,4 @@ Download zip file from [here](https://prod.downloads.arria.com/s1/files/pubs3.st
 
 - Extract the downloaded zip file and add the extract folder into C:\Users\\<username\>\Documents\Qlik\Sense\Extensions in the desktop.
 - Import the zip into Qik Sense Client Managed servers using QMC.
+
