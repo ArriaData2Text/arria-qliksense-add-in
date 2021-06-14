@@ -57,12 +57,12 @@ If you want to go beyond the out-of-the-box narratives offered by this add-in, y
 
 ### LICENSE
 
-Copyright Arria NLG. Released under the Arria NLG Studio Subscription Agreement
+Copyright Arria NLG. Released under the Arria NLG Studio Subscription Agreement.
 
 ### END USER DEPLOYMENT
 
 Download zip file from [here](https://prod.downloads.arria.com/s1/files/pubs3.studio.arria.com/files/QlikSense/add-in/latest)
 
-- Extract the downloaded zip file and add the extract folder into C:\Users\\<username\>\Documents\Qlik\Sense\Extensions in the desktop.
-- Import the zip into Qik Sense Client Managed servers using QMC.
+- Extract the downloaded zip file and add the extracted folder into C:\Users\\<username\>\Documents\Qlik\Sense\Extensions in the desktop.
+- Import the zip into Qlik Sense Client Managed servers using QMC.
 
