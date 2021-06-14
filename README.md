@@ -23,9 +23,9 @@ Bridge Qlik Sense to Arria NLG Studio and go beyond out-of-the-box narratives to
 
 **Features:**
 
-• Arria Apps: Easily configure narratives for your dashboard using apps built for various types of data analysis. See the video here: https://vimeo.com/455877728
+• Arria Apps: Easily configure narratives for your dashboard using apps built for various types of data analysis.
 
-• Arria Answers: Query your data for instant insights and deeper detail – separate from your generated narrative within your dashboard. Move back and forth between Answers and narratives generated from Apps. See the video here: https://vimeo.com/455880380
+• Arria Answers: Query your data for instant insights and deeper detail – separate from your generated narrative within your dashboard. Move back and forth between Answers and narratives generated from Apps.
 
 • Multiple deployment models for enterprises: Arria-hosted Public Cloud, Arria-hosted Private Cloud, or Customer-hosted Deployment (behind your firewall).
 
