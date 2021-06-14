@@ -1,69 +1,67 @@
-# Qliksense
-# Natural Language Insights for BI - Arria NLG Extension for Qlik Sense
+# Intelligent Narratives for BI - Arria NLG Extension for Qlik Sense
 
-### Add out-of-the-box or custom narratives for any visuals, or the dataset, across the entire dashboard
+Add natural language generation (NLG) — out-of-the-box — to augment your dashboards
 
-With Arria NLG’s add-in for Qlik Sense, you can narrate key facts and insights you want to highlight for your readers using natural language generation (NLG). Arria’s add-in offers three levels of customization:
+Quickly identify, communicate, and action key insights. This extension provides two powerful components:
 
-- **Out-of-the-box insights.** This option lets you tell the add-in what it needs to know to automatically generate insights from your dataset with a few clicks of configuration.
+- a range of configurable, out-of-the-box NLG narratives for instant, expert analysis and reporting
+- an embedded chat platform for rapid answers to specific questions.
 
-- **Extendable insights.** In this option, you can quickly customize the out-of-the-box narratives by revising narrative scripts in NLG Studio.
+Arria&#39;s extension enables you to add natural language generation (NLG) capabilities to your dashboard, generating narratives based on the entire dataset beneath it. With expert narrative generated from the entire dataset, critical facts and insights that might otherwise be missed are now shown—resulting in faster, better-informed decision-making. Use this extension on any dashboard or data model you have in Qlik Sense.
 
-- **Programmable narratives.** This option gives you the most flexibility and enables you to create your own custom narratives for specific use cases, with the full programmability of NLG Studio.
-
-By adding Arria’s powerful NLG functionality to your Qlik Sense Desktop, you equip yourself with the ability to generate narratives for any type of data-driven visual, or for underlying data, across the entire dashboard. Now you can generate natural language that explains the most important insights and key drivers, often not captured in your visuals.
+Bridge Qlik Sense to Arria NLG Studio and go beyond out-of-the-box narratives to custom narratives that extract specific insights from the data.
 
 **Highlights:**
 
-- Out-of-the-box or fully programmable narratives backed by Arria’s Insight APIs and NLG Studio
+• unlimited number of dimensions or measures
 
-- By setting configuration options, you generate narratives suited for your specific use case
+• narratives created for any type of data-driven visual
 
-- To further customize the out-of-the-box options, you can extend the narrative by modifying scripts in NLG Studio
+• ask specific questions about your data and get fast, precise answers
 
-- No limit to the number of dimensions or measures
+• encode your own BI-analyst knowledge into the system
 
 **Features:**
 
-- Narratives are fully interactive
+• Arria Apps: Easily configure narratives for your dashboard using apps built for various types of data analysis. See the video here: https://vimeo.com/455877728
 
-- Narratives created for any type of data-driven visual, or even for underlying data not visualized in your report
+• Arria Answers: Query your data for instant insights and deeper detail – separate from your generated narrative within your dashboard. Move back and forth between Answers and narratives generated from Apps. See the video here: https://vimeo.com/455880380
 
-- Encode your human, BI-analyst knowledge into the system – don’t settle for what’s been written into templates by developers who don’t know your domain.
+• Multiple deployment models for enterprises: Arria-hosted Public Cloud, Arria-hosted Private Cloud, or Customer-hosted Deployment (behind your firewall).
 
-- Built-in integration of NLG to make your Qlik Sense analytics more informative and easier to understand
+**Arria Apps include:**
 
-   - Tightly coupled workflow between Qlik Sense and NLG Studio for designing, publishing, and connecting the NLG project to the visualization
-   
-- Full flexibility for the BI developer – interpret the findings, summarize the key insights, point out specific facts, or tell the whole story in as many words as you need
-   
-- Fast-track access to the Arria Store:
-   
-   - Leverage the work of NLG engineers, data scientists, and other BI developers who have created applications and published them there
-   
-   - Use Arria’s starter projects and sample applications
+• Descriptive Statistics. This app analyzes measures over combinations of dimensions. It describes any data points that are deemed to be unusual when compared to the mean of the measure.
 
-### Quick Start Guide
-https://samples.studio.arria.com/v2-qlik/
+• Time-Based Variance. This app performs variance analysis and generates narrative to report key insights. It analyzes and reports the performance of one measure between two time periods, along with a breakdown of important drivers and offsets.
 
-### Usage and Limitations
-If you want to go beyond the out-of-the-box narratives offered by this add-in, you'll need an Arria NLG Studio account. Sign up for the free trial: https://www.arria.com/request-a-trial/
+• Target-Based Variance. This app performs variance analysis and generates narrative to report key insights. It computes and reports the variance between an actual value and a target or budgeted value; it also drills down through a number of dimensions to build the narrative.
 
-### License
-Copyright © 2019 Arria NLG. Released under the Arria NLG Studio Subscription Agreement
+• Describe a Pie Chart. This app performs analysis of a measure by dimension. It describes results as percentages and values, identifying critical insights and explaining the significance of outliers.
 
-### End User Deployment
-User has deploy Qliksense  in two ways Download or Clone the repository
+• Describe a Bar Chart. This app analyzes measures over combinations of dimensions. It generates narrative reports on the significant statistics and/or variances, as shown in a bar chart.
 
-#### Download ZIP file:
-   - Extract the downloaded zip file
-   - Add the extract folder into C:\Users\<username>\Documents\Qlik\Sense\Extensions
+• Describe a Line Graph. This app analyzes measures over combinations of dimensions, over time. It generates narrative reports on the significant statistics and/or variances, as shown in a line graph.
 
-#### Clone the Repository:
-   - Clone the repository in C:\Users\<username>\Documents\Qlik\Sense\Extensions path
+• Trend Analysis. This app analyzes changes in a measure over time. It highlights significant shifts and drills down through a number of dimensions to build the narrative.
 
-#### Steps to build:
-    - npm install
-    - npm run build
+• Ranking Analysis. This app provides a summary of the top and bottom rankings of combinations of dimensions over time, and highlights changes in rank.
 
-Use qliksense-add-in-src.zip file inside dist folder.
+### QUICK START GUIDE
+
+### https://docs.integrations.arria.com/BI/QlikSense/en/index-en.html
+
+### USAGE AND LIMITATIONS
+
+If you want to go beyond the out-of-the-box narratives offered by this add-in, you&#39;ll need an Arria NLG Studio account. Sign up for the free trial: [https://www.arria.com/request-a-trial/](https://www.arria.com/request-a-trial/)
+
+### LICENSE
+
+Copyright Arria NLG. Released under the Arria NLG Studio Subscription Agreement
+
+### END USER DEPLOYMENT
+
+Download zip file from: [https://prod.downloads.arria.com/s1/files/pubs3.studio.arria.com/files/QlikSense/add-in/latest](https://prod.downloads.arria.com/s1/files/pubs3.studio.arria.com/files/QlikSense/add-in/latest)
+
+- Extract the downloaded zip file and add the extract folder into C:\Users\&lt;username\&gt;\Documents\Qlik\Sense\Extensions in the desktop.
+- Import the zip into Qik Sense Client Managed servers using QMC.

@@ -1,9 +1,0 @@
-{
-	"name" : "Articulate Intelligence",
-	"description" : "Add NLG narratives beside visuals to instantly enhance the analysis of your entire dashboard.",
-	"icon" : "extension",
-	"type" : "visualization",
-	"version": "0.1",
-	"preview" : "arria.png",
-	"author": "Arria NLG"
-}
